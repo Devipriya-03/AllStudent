@@ -13,20 +13,41 @@
     $batch= $request->batch;
     $gender=$request->gender;
     $sortby=$request->sortby;
-    
+    $jobeligible=$request->jobeligible;
+    $jobsinhand=$request->jobsinhand;
+    //echo $jobeligible;
 
     
-    $sql="SELECT personal_details_mdb.user_id,personal_details_mdb.first_name,personal_details_mdb.middle_name,personal_details_mdb.last_name,academic_details.Branch,personal_details_mdb.phone_no,personal_details_mdb.email_id,academic_details.SSC_percent,academic_details.inter_percent,academic_details.b_tech_gpa,academic_details.YOP FROM personal_details_mdb , academic_details WHERE personal_details_mdb.user_id=academic_details.user_id AND academic_details.Program='$category'
-        INTERSECT
-        SELECT personal_details_mdb.user_id,personal_details_mdb.first_name,personal_details_mdb.middle_name,personal_details_mdb.last_name,academic_details.Branch,personal_details_mdb.phone_no,personal_details_mdb.email_id,academic_details.SSC_percent,academic_details.inter_percent,academic_details.b_tech_gpa,academic_details.YOP FROM personal_details_mdb , academic_details WHERE personal_details_mdb.user_id=academic_details.user_id AND academic_details.YOP='$batch'
+    if($category=="Any")
+        $sql1="SELECT * from display_filtered_students";
+    else
+        $sql1="SELECT * from display_filtered_students where Program='$category'";
+    if($batch=='nill')
+        $sql2="SELECT * from display_filtered_students";
+    else
+        $sql2="SELECT * from display_filtered_students where YOP='$batch'";
+
+    if($gender=="nill")
+        $sql3="SELECT * from display_filtered_students";
+    else
+        $sql3="SELECT * from display_filtered_students where gender='$gender'";
+
+    if($jobeligible=="yes")
+        $sql4="SELECT * from display_filtered_students where b_tech_gpa>0";
+    if($jobeligible=="no")
+        $sql4="SELECT * from display_filtered_students where b_tech_gpa=0";
+
+    if($jobsinhand=="nill")
+    {
+        $sql5="SELECT * from display_filtered_students";
+    }
+    else{    
+        $sql5="SELECT * from display_filtered_students,cdt2020 WHERE cdt2020.PIU='Y' and display_filtered_students.user_id=cdt2020.userid group by display_filtered_students.user_id HAVING COUNT(display_filtered_students.user_id)<=".$jobsinhand;
+    }
+
+    $sql=$sql1." INTERSECT ".$sql2." INTERSECT ".$sql3;
+
         
-        INTERSECT
-        SELECT personal_details_mdb.user_id,personal_details_mdb.first_name,personal_details_mdb.middle_name,personal_details_mdb.last_name,academic_details.Branch,personal_details_mdb.phone_no,personal_details_mdb.email_id,academic_details.SSC_percent,academic_details.inter_percent,academic_details.b_tech_gpa,academic_details.YOP FROM personal_details_mdb , academic_details WHERE personal_details_mdb.user_id=academic_details.user_id AND personal_details_mdb.gender='$gender'
-        INTERSECT
-                                    SELECT personal_details_mdb.user_id,personal_details_mdb.first_name,personal_details_mdb.middle_name,personal_details_mdb.last_name,academic_details.branch,personal_details_mdb.phone_no,personal_details_mdb.email_id,academic_details.SSC_percent,academic_details.inter_percent,academic_details.b_tech_gpa,academic_details.pass_category FROM personal_details_mdb , academic_details WHERE personal_details_mdb.user_id=academic_details.user_id  order by $sortby
-
-     ";
-
     if($result = mysqli_query($con,$sql))
     {
         $cr=0;
