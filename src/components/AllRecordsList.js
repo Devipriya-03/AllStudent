@@ -4,9 +4,9 @@ export default class Students extends Component{
         return(
             <tr>
                 <td>{this.props.obj.id}</td>
-                <td>{this.props.obj.fname}</td>
-                <td>{this.props.obj.mname}</td>
-                <td>{this.props.obj.lname}</td>
+                <td align="left">{this.props.obj.fname}</td>
+                <td align="left">{this.props.obj.mname}</td>
+                <td align="left">{this.props.obj.lname}</td>
                 <td>{this.props.obj.Branch}</td>
                 <td>{this.props.obj.sscmarks}</td>
                 <td>{this.props.obj.intermarks}</td>
